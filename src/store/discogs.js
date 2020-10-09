@@ -11,20 +11,19 @@ export const getDiscogsReleasesThunk = (artist) => {
   return async dispatch => {
     try {
       const releases = await axios.get(`/api/discogs/${artist}`)
-      dispatch(getDiscogsReleases(releases))
+      dispatch(getDiscogsReleases(releases.releases))
     } catch(e) {
       console.log(e)
     }
   }
 }
 
-
 const initialState = [];
 
 const getDiscogsReleasesReducer = (state = initialState, action) => {
   switch(action.type){
     case GET_DISCOGS_RELEASES:
-      return action.releases
+      return action
     default:
     return state
   }

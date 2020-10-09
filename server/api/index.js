@@ -5,9 +5,14 @@ router.use('/lastfm', require('./lastfm'))
 
 
 router.use((req, res, next) => {
-  const error = new Error('Not Found')
-  error.status = 404
-  next(error)
+  try {
+    const error = new Error('Not Found')
+    error.status = 404
+    next(error)
+  } catch(error) {
+    console.log('error', error)
+  }
+
 })
 
 module.exports = router

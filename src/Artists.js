@@ -42,10 +42,10 @@ class Artists extends React.Component {
             {(artist.length === 0) ? (<div></div>) :
             (<div>
               <h3>Artists:</h3>
-                {artist.map(el => (
-                  <div>
+                {artist.map((el, index) => (
+                  <div key={index}>
                     <h4>{el}</h4>
-                    <Link name={el} to={`/artists/moreinfo/${el}`} onClick={(event) => {
+                    <Link name={el} to={`/moreinfo/${el}`} onClick={(event) => {
                       this.props.getLastfmProfile(event.target.name)
                       this.props.getDiscogsReleases(event.target.name)
                       }}>About</Link>

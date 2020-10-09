@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const fetch = require('node-fetch')
 var Discogs = require('disconnect').Client;
-require('../../../secrets')
+// require('../../../secrets')
 
 
 var requestData
@@ -13,17 +13,21 @@ module.exports = router
 router.get('/:artist', async (req, res, next) => {
   try {
     const artist = await req.params.artist;
-    console.log(artist);
-    var db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
+    let releases
+    let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
       db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
         if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
           let id = await data.results[0].id
           await db.getArtistReleases(id, {page: '1', per_page: '5'}, function(err, data) {
-            console.log('albums', data.releases);
-            res.send(data);
+            releases = data
+            console.log(releases)
           })
         }
-    });
+    })
+    if(releases !== 'error') {
+      res.send(releases);
+    }
+    next()
   } catch(e) {
      console.log(e);
      next(e)

@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const session = require('express-session')
 const PORT = process.env.PORT || 5000
+require('dotenv').config()
 
 
 express()

@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-require('../../../secrets');
+// require('../../../secrets');
 
 //47b83d9adb28b0160e6766f97bf60d99
 function search(name) {
