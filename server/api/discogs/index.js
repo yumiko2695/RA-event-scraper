@@ -9,30 +9,107 @@ var accessData
 
 module.exports = router
 
+var idInfo;
+var idReleases;
+
+router.get('/profile/:id', async (req, res, next) => {
+  try {
+    const id = await req.params.id;
+    console.log(id)
+    let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database()
+    db.getArtistReleases(idInfo, {page: '1', per_page: '5'}, function(err, data) {
+          console.log('albums', data.releases);
+          idReleases = data.releases
+        })
+        if(idReleases) {
+          res.send(idReleases)
+        }
+    next()
+  } catch(e) {
+    console.error(e)
+    next(e)
+  }
+})
 
 router.get('/:artist', async (req, res, next) => {
   try {
     const artist = await req.params.artist;
-    let releases
     let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
-      db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
+    db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
         if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
+          console.log(data.results)
           let id = await data.results[0].id
-          await db.getArtistReleases(id, {page: '1', per_page: '5'}, function(err, data) {
-            releases = data
-            console.log(releases)
-          })
+          console.log('this is id inside call', id)
+          idInfo = id
         }
-    })
-    if(releases !== 'error') {
-      res.send(releases);
+        })
+        if(idInfo) {
+          res.send(idInfo)
+        }
+        next()
     }
-    next()
-  } catch(e) {
-     console.log(e);
-     next(e)
-  }
+    catch(e) {
+      console.error(e)
+      next(e)
+    }
 })
+
+//     router.get('/:artist', async (req, res, next) => {
+//       try {
+//         const artist = await req.params.artist;
+//         let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
+//         db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
+//             if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
+//             let id = await data.results[0].id
+//             console.log('this is id inside call', id)
+//             idInfo = id;
+//             if(idInfo) {
+//               db.getArtistReleases(idInfo, {page: '1', per_page: '5'}, function(err, data) {
+//                 console.log('albums', data.releases);
+//                 idReleases = data.releases
+//               })
+//             }
+//             }
+//         })
+//     res.send(idReleases)
+
+//     next()
+//   } catch(e) {
+//     console.log(e);
+//     next(e)
+//   }
+// })
+
+// router.get('/:artist', async (req, res, next) => {
+//   try {
+//     const artist = await req.params.artist;
+//     let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
+//     db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
+//         if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
+//         let id = await data.results[0].id
+//         console.log('this is id inside call', id)
+//         idInfo = id;
+//         if(idInfo) {
+//           db.getArtistReleases(idInfo, {page: '1', per_page: '5'}, function(err, data) {
+//             console.log('albums', data.releases);
+//             idReleases = data.releases
+//           })
+//         }
+//         }
+//     })
+// //console.log('this is id info', idInfo)
+// res.send(idReleases)
+// // console.log(info)
+// // if(info !== 'error') {
+// //   console.log('this is releases', info)
+// //   res.send(info);
+// // }
+// next()
+// } catch(e) {
+// console.log(e);
+// next(e)
+// }
+// })
 
 
 // router.get('/authorize', function(req, res){

@@ -6,7 +6,15 @@ module.exports = router
 
 router.get('/', async (req, res, next) => {
   try {
-    const artists = await scrape.scraper(req.query.eventUrl);
+    let {eventUrl} = req.query
+    eventUrl = [...eventUrl]
+    eventUrl.pop()
+    eventUrl.shift()
+    eventUrl = eventUrl.join('')
+    console.log(eventUrl)
+    //check if http is in link
+    const artists = await scrape.scraper(eventUrl);
+    console.log(artists)
     res.send(artists);
   } catch(e) {
     console.log(e)
