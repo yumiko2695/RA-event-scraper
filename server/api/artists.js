@@ -11,10 +11,10 @@ router.get('/', async (req, res, next) => {
     eventUrl.pop()
     eventUrl.shift()
     eventUrl = eventUrl.join('')
-    console.log(eventUrl)
+    // console.log(eventUrl)
     //check if http is in link
     const artists = await scrape.scraper(eventUrl);
-    console.log(artists)
+    // console.log(artists)
     res.send(artists);
   } catch(e) {
     console.log(e)

@@ -37,7 +37,7 @@ function scraper(searchUrl) {
           return str;
         }
       })
-    console.log(arr);
+    // console.log(arr);
     return arr;
     })
 }

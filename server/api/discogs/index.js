@@ -12,47 +12,52 @@ module.exports = router
 var idInfo;
 var idReleases;
 
+
+
 router.get('/profile/:id', async (req, res, next) => {
   try {
     const id = await req.params.id;
     console.log(id)
-    let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database()
-    db.getArtistReleases(idInfo, {page: '1', per_page: '5'}, function(err, data) {
-          console.log('albums', data.releases);
-          idReleases = data.releases
+    var db = new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database()
+    db.getArtistReleases(id, {page: '1', per_page: '5'}, function(err, data) {
+      if(data.releases) {
+        res.send(data.releases)
+      }
         })
-        if(idReleases) {
-          res.send(idReleases)
-        }
-    next()
+
   } catch(e) {
-    console.error(e)
+    console.log(e)
     next(e)
   }
 })
 
-router.get('/:artist', async (req, res, next) => {
+router.get('/idNum/:artist', async (req, res, next) => {
   try {
     const artist = await req.params.artist;
-    let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
-    db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
-        if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
-          console.log(data.results)
-          let id = await data.results[0].id
-          console.log('this is id inside call', id)
-          idInfo = id
-        }
-        })
-        if(idInfo) {
-          res.send(idInfo)
-        }
-        next()
+    var db = new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
+    db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, function(err, data){
+          if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
+           let id =  data.results[0].id
+            console.log('this is id inside call', id)
+            res.send(`${id}`)
+         }
+         })
     }
     catch(e) {
-      console.error(e)
+      console.log(e)
       next(e)
     }
 })
+
+// let db = await new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database();
+//     db.search({type:'artist', q: `${artist}`, page:'1', per_page:'5'}, async function(err, data){
+//         if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
+//           let id = await data.results[0].id
+//           console.log('this is id inside call', id)
+//           idInfo = id
+//           res.send(idInfo)
+//         }
+//         })
 
 //     router.get('/:artist', async (req, res, next) => {
 //       try {

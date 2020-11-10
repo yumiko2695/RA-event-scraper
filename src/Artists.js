@@ -160,13 +160,12 @@ function Artists(props) {
   // }
   const getInfoDiscogs = async (artist) => {
     try {
-      const id = await axios.get(`/api/discogs/${artist}`)
+      const id = await axios.get(`/api/discogs/idNum/${artist}`)
+      console.log(id)
       if(id) {
-        console.log(id)
         const resDiscogs = await axios.get(`/api/discogs/profile/${id.data}`)
-        if(resDiscogs.data) {
-          setDiscogsInfo(resDiscogs.data)
-        }
+        console.log(resDiscogs)
+        setDiscogsInfo(resDiscogs.data)
       }
     } catch(e) {
       console.log(e)
