@@ -72,34 +72,40 @@ const releaseStyles = {
   flexDirection:  'row',
   flexWrap: 'wrap',
   width: 'auto',
+  justifyContent: 'space-around'
+}
+
+const linkStyle = {
+  color: 'blue'
 }
 
 function Releases(props){
   const {index, releaseTitle, format, label, thumb} = props
   return (
     <div key={index} >
-      <h5>{releaseTitle}</h5>
-      <h5>{format}</h5>
-      <h5>{label}</h5>
+      <h5>Release: {releaseTitle}</h5>
+      {label ?
+      <h5>Label: {label}</h5>
+      :<h5>No Label</h5>}
         <div className="thumbnail">
           <img src={thumb}/>
         </div>
+        <h5>Format: {format}</h5>
       </div>
   )
 }
 
 function ArtistInfo(props){
-  const { el, lastFmInfo, discogsInfo, closeModal} = props
+  const { el, lastFmInfo, discogsInfo, discogsUrl, closeModal} = props
 
   return(
           <div className='modalGuts'>
             <h2>About {el}</h2>
               {lastFmInfo && lastFmInfo.artist ?
                 <div className='infoStyles' >
-                  <h3>{lastFmInfo.artist.name}</h3>
-                  <h5>{lastFmInfo.artist.url}</h5>
                   <h6>{lastFmInfo.artist.bio.content}</h6>
                   <h6>{lastFmInfo.artist.summary}</h6>
+                  <h6 style={linkStyle} onClick={()=> window.open(lastFmInfo.artist.url, "_blank")}>Learn more on Last.FM</h6>
                 </div>
               : <div><h4>loading ...</h4></div>}
               {discogsInfo !== [] ?
@@ -113,6 +119,7 @@ function ArtistInfo(props){
                                     )
                               })}
                             </div>
+                            <h6 style={linkStyle} onClick={()=> window.open(discogsUrl, "_blank")}>{el} Discogs Page</h6>
                           </div>
                         : <div><h4>loading releases....</h4></div>
                         }
@@ -130,6 +137,7 @@ function Artists(props) {
   const [lastFmInfo, setLastFmInfo] = useState([])
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalNum, setModalNum] = useState(false)
+  const [discogsUrl, setDiscogsUrl] = useState(false)
   console.log(discogsInfo)
 
   const openModal = (event) => {
@@ -145,6 +153,7 @@ function Artists(props) {
     setDiscogsInfo([])
     setLastFmInfo([])
     setModalNum(false)
+    setDiscogsUrl(false)
   }
 
   // const getInfoDiscogs = async (artist) => {
@@ -163,8 +172,9 @@ function Artists(props) {
       const id = await axios.get(`/api/discogs/idNum/${artist}`)
       console.log(id)
       if(id) {
-        const resDiscogs = await axios.get(`/api/discogs/profile/${id.data}`)
+        const resDiscogs = await axios.get(`/api/discogs/profile/${id.data.id}`)
         console.log(resDiscogs)
+        setDiscogsUrl(id.data.url)
         setDiscogsInfo(resDiscogs.data)
       }
     } catch(e) {
@@ -209,7 +219,7 @@ function Artists(props) {
                         <div key={index}>
                         <h4>{el}</h4>
                         {modalIsOpen && modalNum && (Number(modalNum) === Number(index)) ?
-                          <ArtistInfo key={index} i={index} el={el} modalNum={modalNum} lastFmInfo={lastFmInfo} discogsInfo={discogsInfo} closeModal={closeModal}/> :
+                          <ArtistInfo key={index} i={index} el={el} modalNum={modalNum} lastFmInfo={lastFmInfo} discogsInfo={discogsInfo} discogsUrl={discogsUrl} closeModal={closeModal}/> :
                           <button onClick={openModal} name={el} id={index}> More Info</button>}
                         </div>
                       ))}

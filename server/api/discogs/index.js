@@ -21,6 +21,7 @@ router.get('/profile/:id', async (req, res, next) => {
     var db = new Discogs({consumerKey: `${process.env.DISCOGS_CONSUMER_KEY}`,consumerSecret: `${process.env.DISCOGS_CONSUMER_SECRET}`}).database()
     db.getArtistReleases(id, {page: '1', per_page: '5'}, function(err, data) {
       if(data.releases) {
+        console.log(data.releases)
         res.send(data.releases)
       }
         })
@@ -39,7 +40,7 @@ router.get('/idNum/:artist', async (req, res, next) => {
           if(data.results[0].title.toLowerCase() === artist.toLowerCase()) {
            let id =  data.results[0].id
             console.log('this is id inside call', id)
-            res.send(`${id}`)
+            res.send({id: `${id}`, url: `https://www.discogs.com${data.results[0].uri}`})
          }
          })
     }
