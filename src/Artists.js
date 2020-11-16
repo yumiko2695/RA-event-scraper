@@ -1,71 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal'
 import axios from 'axios'
+import cheerio from 'cheerio'
 Modal.setAppElement('#root')
 
-const customStyles = {
-  overlay: {
-    // backgroundColor: 'rgba(0,0,0,.8)',
-    // position: 'fixed',
-    // zIndex: '999999',
-    // top: '0',
-    // left: '0',
-    // width: '100vw',
-    // height: '100vh',
-    // background: 'rgba(0, 0, 0, 0.3)',
-    // display: 'flex',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    width: '100%',
-    height: '100%',
-    zIndex: '50',
-    background: 'rgba(0, 0, 0, 0.6)',
-  },
-  content : {
-    // color: 'white',
-    // backgroundColor: 'black',
-    // top                   : '50%',
-    // left                  : '50%',
-    // right                 : 'auto',
-    // bottom                : 'auto',
-    // marginRight           : '-50%',
-    // transform             : 'translate(-50%, -50%)',
-    display: 'block',
-    width: '600px',
-    maxWidth: '100%',
-    height: '400px',
-    maxHeight: '100%',
-    position: 'fixed',
-    zIndex: '100',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    background: 'white',
-    boxShadow: '0 0 60px 10px rgba(0, 0, 0, 0.9)',
-  }
-};
-const modalGuts = {
-  zIndex: '1000',
-  position: 'absolute',
-  display: 'flex',
-  flexDirection: 'column',
-  top: '0',
-  left: '0',
-  width: '100%',
-  height: '100%',
-  overflowY: 'auto',
-  padding: '20px 50px 20px 20px'
-}
-
-const infoStyles = {
-  zIndex: '1000',
-  position: 'relative',
-  width: '100%',
-  display: 'block',
-}
 
 const releaseStyles = {
   display: 'flex',
@@ -97,7 +35,6 @@ function Releases(props){
 
 function ArtistInfo(props){
   const { el, lastFmInfo, discogsInfo, discogsUrl, closeModal} = props
-
   return(
           <div className='modalGuts'>
             <h2>About {el}</h2>
@@ -146,8 +83,6 @@ function Artists(props) {
       getInfoLastFm(event.currentTarget.name)
       getInfoDiscogs(event.currentTarget.name)
   }
-  // const afterOpenModal = () => {subtitle.style.color = '#f00'}
-
   const closeModal = () => {
     setIsOpen(false)
     setDiscogsInfo([])
@@ -156,17 +91,6 @@ function Artists(props) {
     setDiscogsUrl(false)
   }
 
-  // const getInfoDiscogs = async (artist) => {
-  //   try {
-  //     const resDiscogs = await axios.get(`/api/discogs/${artist}`)
-  //     console.log(resDiscogs)
-  //     if(resDiscogs.data) {
-  //       setDiscogsInfo(resDiscogs.data)
-  //     }
-  //   } catch(e) {
-  //     console.log(e)
-  //   }
-  // }
   const getInfoDiscogs = async (artist) => {
     try {
       const id = await axios.get(`/api/discogs/idNum/${artist}`)
@@ -192,12 +116,23 @@ function Artists(props) {
       console.log(e)
     }
   }
+  // const handleSubmit = async (event) => {
+  //   try {
+  //     event.persist()
+  //     let res = await getArtists(eventURL.toString())
+  //     console.log(res)
+  //     setArtistsArr(res);
+  //   } catch(error) {
+  //     console.log(error)
+  //   }
+  // }
   const handleSubmit = async (event) => {
     try {
       event.persist()
-      let res = await axios.get('/api/artists/', {params: {
-        eventUrl: JSON.stringify(eventURL)
-      }})
+       let res = await axios.get('/api/artists/', {params: {
+         eventUrl: JSON.stringify(eventURL)
+       }})
+       console.log(res)
       setArtistsArr(res.data);
     } catch(error) {
       console.log(error)
@@ -215,7 +150,7 @@ function Artists(props) {
         {(artistsArr.length === 0) ? null :
             (<div>
               <h3>Artists:</h3>
-                      {artistsArr.map((el, index) => (
+                      {artistsArr && artistsArr.map((el, index) => (
                         <div key={index}>
                         <h4>{el}</h4>
                         {modalIsOpen && modalNum && (Number(modalNum) === Number(index)) ?

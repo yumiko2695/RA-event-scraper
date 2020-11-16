@@ -15,15 +15,13 @@ express()
   .use(express.urlencoded({extended:true}))
   .use(cors())
   .use('/api', require('./api'))
-  .use(express.static(path.join(__dirname, 'public')))
-  // .use((req, res, next) => {
-  //   const error = new Error('Not Found')
-  //   error.status = 404
-  //   next(error)
-  // })
+  .use(express.static(path.join(__dirname, 'build')))
   .set('views', path.join(__dirname, 'src'))
   .set('view engine', 'html')
-  .get('/', (req, res) => res.render('public/index.html'))
+  // .get('/', (req, res) => res.render('build/index.html'))
+  .get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  })
   .use((err, req, res, next) => {
     console.error(err)
     console.error(err.stack)

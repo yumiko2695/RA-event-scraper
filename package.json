@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "proxy": "http://localhost:5000",
+  "homepage": "https://ra-event-scraper.web.app",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -18,6 +19,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "fetch": "^1.1.0",
+    "firebase": "^8.0.1",
     "fs": "0.0.1-security",
     "helmet": "^3.23.3",
     "morgan": "^1.10.0",
@@ -34,7 +36,8 @@
     "react-script-tag": "^1.1.2",
     "react-scripts": "3.4.1",
     "request": "^2.88.2",
-    "write-stream": "^0.4.3"
+    "write-stream": "^0.4.3",
+    "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
     "server": "nodemon server",

@@ -11,7 +11,8 @@ function App() {
       <div className="App">
         <Navbar />
         <div className="app-inside">
-        <Route exact path="/" component={Artists}/>
+          <Artists/>
+        {/* <Route exact path="/" component={Artists}/> */}
         </div>
       </div>
     </BrowserRouter>
