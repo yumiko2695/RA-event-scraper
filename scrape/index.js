@@ -13,19 +13,20 @@ async function scraper (searchUrl){
     function ninjaGetIp() {
       return new Promise(function (resolve, reject) {
           var ipRequest = new XMLHttpRequest();
-          ipRequest.open('GET', searchUrl, true);
+          ipRequest.open('GET', searchUrl);
           ipRequest.send();
           ipRequest.onload = function () {
               if (ipRequest.status >= 200 && ipRequest.status < 400) { // If response is all good...
                   return resolve(ipRequest.responseText);
-              } else {
+              }
+              else {
                   console.log('There was an error retrieving the public IP.');
                   return resolve('127.0.0.1');
               }
           }
       });
   }
-  let info = ninjaGetIp()
+  let info = await ninjaGetIp()
   return info;
 //   const reqListener = (input) => {
 //     try {

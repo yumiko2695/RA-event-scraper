@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const scrape = require('../../scrape/index.js')
 const cheerio = require('cheerio');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 module.exports = router
 
@@ -42,17 +41,6 @@ const reqListener = (input) => {
   } catch(e) {
     console.error(e)
   }
-}
-const load = (url) => {
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      let info = xhr.responseText
-      return info;
-    }
-  }
-  xhr.open('GET', url, true);
-  xhr.send('');
 }
 
 router.get('/', async (req, res, next) => {

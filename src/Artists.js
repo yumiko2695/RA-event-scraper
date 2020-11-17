@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal'
 import axios from 'axios'
 import cheerio from 'cheerio'
-Modal.setAppElement('#root')
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
+Modal.setAppElement('#root')
 
 const releaseStyles = {
   display: 'flex',
@@ -116,24 +117,59 @@ function Artists(props) {
       console.log(e)
     }
   }
-  // const handleSubmit = async (event) => {
-  //   try {
-  //     event.persist()
-  //     let res = await getArtists(eventURL.toString())
-  //     console.log(res)
-  //     setArtistsArr(res);
-  //   } catch(error) {
-  //     console.log(error)
-  //   }
-  // }
+
   const handleSubmit = async (event) => {
     try {
       event.persist()
-       let res = await axios.get('/api/artists/', {params: {
-         eventUrl: JSON.stringify(eventURL)
-       }})
-       console.log(res)
-      setArtistsArr(res.data);
+      function scrape(searchUrl) {
+        return fetch(`https://cors-anywhere.herokuapp.com/${searchUrl}`, {mode: 'cors', headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  } })
+    .then(response => response.text())
+    .then(body => {
+      const $ = cheerio.load(body);
+      let lineup = $('.lineup.medium');
+      if(lineup.html() === null) {
+        lineup = $('.lineup.large')
+      }
+      const lineUpHTML = lineup.html();
+      let re= /<br>|,/
+      let arr = lineUpHTML.split(re);
+      arr = arr.map(el => {
+        if(el!==undefined) {
+          return el;
+        }
+      })
+      arr = arr.map((str, i) => {
+        if(i!==0) {
+          return str.slice(1,str.length)
+        } else {
+          return str
+        }
+      })
+      arr = arr.map((str) => {
+        let i = str.indexOf('>');
+        if(i === -1) {
+          return str;
+        } else {
+          str = str.slice(i+1, str.length+1);
+          let j = str.indexOf('<');
+          str = str.slice(0, j);
+          return str;
+        }
+      })
+    // console.log(arr);
+    return arr;
+    })
+}
+let info = await scrape(eventURL)
+console.log(info)
+setArtistsArr(info)
+      //  let res = await axios.get('/api/artists/', {params: {
+      //    eventUrl: JSON.stringify(eventURL)
+      //  }})
+      //  console.log(res)
+      // setArtistsArr(res.data);
     } catch(error) {
       console.log(error)
     }
