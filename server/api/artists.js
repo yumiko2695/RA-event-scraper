@@ -51,15 +51,18 @@ router.get('/', async (req, res, next) => {
     eventUrl.shift()
     eventUrl = eventUrl.join('')
     const response = await scrape.scraper(eventUrl)
-    let arr = reqListener(response)
-    console.log('arr', arr)
-    if(arr === undefined) {
+    //let arr = reqListener(response)
+    //console.log('arr', arr)
+    if(response === undefined) {
       res.send(['madonna'])
     } else {
-      res.send(arr);
+      res.send(response);
     }
   } catch(e) {
     console.log(e)
     next(e);
   }
 })
+
+
+
