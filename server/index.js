@@ -12,6 +12,10 @@ express()
   .use(helmet())
   .use(morgan('dev'))
   .use(express.json())
+  .use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", process.env.ORIGIN || "*");
+    next();
+  })
   .use(express.urlencoded({extended:true}))
   .use(cors({origin: 'true'}))
   .use('/api', require('./api'))

@@ -38,6 +38,7 @@
     "react-script-tag": "^1.1.2",
     "react-scripts": "3.4.1",
     "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "write-stream": "^0.4.3",
     "xmlhttprequest": "^1.8.0"
   },

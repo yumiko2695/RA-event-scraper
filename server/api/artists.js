@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const scrape = require('../../scrape/index.js')
 const cheerio = require('cheerio');
+const request = require('request');
 
 module.exports = router
 
@@ -45,19 +46,13 @@ const reqListener = (input) => {
 
 router.get('/', async (req, res, next) => {
   try {
+    var final
    let eventUrl = await req.query.eventUrl
     eventUrl = [...eventUrl]
     eventUrl.pop()
     eventUrl.shift()
     eventUrl = eventUrl.join('')
-    const response = await scrape.scraper(eventUrl)
-    //let arr = reqListener(response)
-    //console.log('arr', arr)
-    if(response === undefined) {
-      res.send(['madonna'])
-    } else {
-      res.send(response);
-    }
+    const rezzy = await scrape.scraper(eventUrl, res)
   } catch(e) {
     console.log(e)
     next(e);
