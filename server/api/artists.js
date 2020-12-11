@@ -5,14 +5,16 @@ const request = require('request');
 
 module.exports = router
 
-const reqListener = (input) => {
+const reqListener = async (input) => {
   try {
     const $ = cheerio.load(input)
     let lineup = $('.lineup.medium');
     if(lineup.html() === null) {
       lineup = $('.lineup.large')
+      console.log(lineup.html())
     }
     const lineUpHTML = lineup.html();
+    console.log(lineUpHTML)
     let re= /<br>|,/
     let arr = lineUpHTML.split(re);
     arr = arr.map(el => {
@@ -48,11 +50,16 @@ router.get('/', async (req, res, next) => {
   try {
     var final
    let eventUrl = await req.query.eventUrl
+   console.log(eventUrl)
     eventUrl = [...eventUrl]
     eventUrl.pop()
     eventUrl.shift()
     eventUrl = eventUrl.join('')
-    const rezzy = await scrape.scraper(eventUrl, res)
+    console.log(eventUrl)
+   // const resssy = reqListener(eventUrl)
+    const rezzy = await scrape.scraper(eventUrl)
+    console.log(rezzy)
+   res.send(rezzy)
   } catch(e) {
     console.log(e)
     next(e);

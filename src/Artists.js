@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal'
 import axios from 'axios'
-import cheerio from 'cheerio'
-import $ from 'jquery'
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
 
 Modal.setAppElement('#root')
 
@@ -77,7 +75,6 @@ function Artists(props) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [modalNum, setModalNum] = useState(false)
   const [discogsUrl, setDiscogsUrl] = useState(false)
-  console.log(discogsInfo)
 
   const openModal = (event) => {
       setModalNum(event.currentTarget.id)
@@ -124,7 +121,7 @@ function Artists(props) {
         let res = await axios.get('/api/artists/', {params: {
           eventUrl: JSON.stringify(eventURL)
         }})
-        console.log(res)
+        console.log('res', res)
        setArtistsArr(res.data);
     } catch(error) {
       console.log(error)
